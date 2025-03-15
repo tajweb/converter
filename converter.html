@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Табдилкунандаи матн (тоҷикӣ ба тољикї)</title>
+    <meta name="description" content="Табдилкунандаи матн аз тоҷикӣ ба тољикї ва баръакс. Зуд ва осон матнро табдил диҳед!">
+    <meta name="keywords" content="табдилкунандаи матн, тоҷикӣ, тољикї, конвертер матн, онлайн конвертер">
+    <meta name="author" content="@web_tj">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph (Facebook, Telegram, WhatsApp etc) -->
+    <meta property="og:title" content="Табдилкунандаи матн (тоҷикӣ ба тољикї)">
+    <meta property="og:description" content="Табдилдиҳии осон ва зуди матн аз тоҷикӣ ба тољикї ва баръакс онлайн.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://donish.net">
+<!--    <meta property="og:image" content="https://donish.net/preview-image.jpg">-->
+    <meta property="og:site_name" content="ДОНИШ">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Табдилкунандаи матн (тоҷикӣ ба тољикї)">
+    <meta name="twitter:description" content="Табдилдиҳии осон ва зуди матн аз тоҷикӣ ба тољикї ва баръакс онлайн.">
+<!--    <meta name="twitter:image" content="https://donish.net/preview-image.jpg">-->
+    <meta name="twitter:creator" content="@web_tj">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        h2 {
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        .textarea-container {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .text-center a {
+            color: #0d6efd;
+        }
+
+        .text-center a:hover {
+            color: #0b5ed7;
+        }
+
+        .container {
+            padding-bottom: 50px;
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">Табдилкунандаи матн (тоҷикӣ ба тољикї)</h2>
+    <div class="row">
+        <div class="col-md-6 textarea-container">
+            <div class="input-header">
+                <label for="inputText">Матни вурудӣ (Табдили тоҷикӣ ба тољикї):</label>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="copyText('inputText')"><i
+                            class="bi bi-clipboard"></i> Бардоштан
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="pasteText('inputText')"><i
+                            class="bi bi-clipboard-check"></i> Часбондан
+                    </button>
+                </div>
+            </div>
+            <textarea class="form-control" id="inputText" rows="20"
+                      placeholder="Натиҷаро гиред ё матнро гузоред"></textarea>
+        </div>
+        <div class="col-md-6 textarea-container">
+            <div class="input-header">
+                <label for="outputText">Матни хуруҷӣ (Табдили тољикї ба тоҷикӣ):</label>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="copyText('outputText')"><i
+                            class="bi bi-clipboard"></i> Бардоштан
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="pasteText('outputText')"><i
+                            class="bi bi-clipboard-check"></i> Часбондан
+                    </button>
+                </div>
+
+            </div>
+            <textarea class="form-control" id="outputText" rows="20"
+                      placeholder="Натиҷаро гиред ё матнро гузоред"></textarea>
+        </div>
+    </div>
+    <div class="text-center text-muted mt-5">
+        © 2024 <a href="https://t.me/web_tj" target="_blank" class="text-decoration-none">@web_tj</a>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Tajik to Ruzbaki mapping arrays
+    const taj = ['Ҷ', 'ҷ', 'Қ', 'қ', 'Ҳ', 'ҳ', 'Ӣ', 'ӣ', 'Ғ', 'ғ', 'Ӯ', 'ӯ'];
+    const ruzb = ['Љ', 'љ', 'Ќ', 'ќ', 'Њ', 'њ', 'Ї', 'ї', 'Ѓ', 'ѓ', 'Ў', 'ў'];
+
+    // Function to replace Tajik characters with Ruzbaki equivalents
+    function toRuzbaki(text) {
+        for (let i = 0; i < taj.length; i++) {
+            const regex = new RegExp(taj[i], 'g');
+            text = text.replace(regex, ruzb[i]);
+        }
+        return text;
+    }
+
+    // Function to replace Ruzbaki characters back to Tajik equivalents
+    function toTajik(text) {
+        for (let i = 0; i < ruzb.length; i++) {
+            const regex = new RegExp(ruzb[i], 'g');
+            text = text.replace(regex, taj[i]);
+        }
+        return text;
+    }
+
+    function copyText(elementId) {
+    const element = document.getElementById(elementId);
+    if (element.value.trim() !== '') {
+        element.select();
+        navigator.clipboard.writeText(element.value);
+    }
+}
+
+    async function pasteText(elementId) {
+        try {
+            const text = await navigator.clipboard.readText();
+            const element = document.getElementById(elementId);
+            element.value = text;
+
+            // Trigger the input event manually after pasting
+            const event = new Event('input', { bubbles: true });
+            element.dispatchEvent(event);
+        } catch (err) {
+            console.error('Failed to paste: ', err);
+        }
+    }
+
+    // Event listener for the first textarea (Tajik to Ruzbaki)
+    document.getElementById('inputText').addEventListener('input', function() {
+        const inputText = this.value;
+        const modifiedText = toRuzbaki(inputText);
+        document.getElementById('outputText').value = modifiedText;
+    });
+
+    // Event listener for the second textarea (Ruzbaki back to Tajik)
+    document.getElementById('outputText').addEventListener('input', function() {
+        const outputText = this.value;
+        const modifiedText = toTajik(outputText);
+        document.getElementById('inputText').value = modifiedText;
+    });
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(57029521, "init", {
+         clickmap:true,
+         trackLinks:true,
+         accurateTrackBounce:true
+    });
+</script>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/57029521" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+</html>
