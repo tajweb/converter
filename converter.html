@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Табдилкунандаи матн (тоҷикӣ ба тољикї)</title>
-    <meta name="description" content="Табдилкунандаи матн аз тоҷикӣ ба тољикї ва баръакс. Зуд ва осон матнро табдил диҳед!">
+    <meta name="description"
+          content="Табдилкунандаи матн аз тоҷикӣ ба тољикї ва баръакс. Зуд ва осон матнро табдил диҳед!">
     <meta name="keywords" content="табдилкунандаи матн, тоҷикӣ, тољикї, конвертер матн, онлайн конвертер">
     <meta name="author" content="@web_tj">
     <meta name="robots" content="index, follow">
@@ -14,14 +15,14 @@
     <meta property="og:description" content="Табдилдиҳии осон ва зуди матн аз тоҷикӣ ба тољикї ва баръакс онлайн.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://donish.net">
-<!--    <meta property="og:image" content="https://donish.net/preview-image.jpg">-->
+    <!--    <meta property="og:image" content="https://donish.net/preview-image.jpg">-->
     <meta property="og:site_name" content="ДОНИШ">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Табдилкунандаи матн (тоҷикӣ ба тољикї)">
     <meta name="twitter:description" content="Табдилдиҳии осон ва зуди матн аз тоҷикӣ ба тољикї ва баръакс онлайн.">
-<!--    <meta name="twitter:image" content="https://donish.net/preview-image.jpg">-->
+    <!--    <meta name="twitter:image" content="https://donish.net/preview-image.jpg">-->
     <meta name="twitter:creator" content="@web_tj">
 
     <!-- Bootstrap CSS -->
@@ -44,7 +45,7 @@
 
         h2 {
             color: #343a40;
-            margin-bottom: 20px;
+
         }
 
         .textarea-container {
@@ -76,6 +77,31 @@
             align-items: center;
         }
 
+        .title-block {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .toast-container {
+            z-index: 1050;
+        }
+
+        .toast {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .toast-body {
+            font-size: 1rem;
+        }
+
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
@@ -84,7 +110,13 @@
 </head>
 <body>
 <div class="container">
-    <h2 class="text-center">Табдилкунандаи матн (тоҷикӣ ба тољикї)</h2>
+    <div class="title-block">
+        <h2 class="text-center">Табдилкунандаи матн (тоҷикӣ ба тољикї)</h2>
+        <button class="btn btn-outline-primary btn-sm" onclick="copyPasteText()"><i
+                class="bi bi-clipboard"></i> <i
+                class="bi bi-clipboard-check"></i>
+        </button>
+    </div>
     <div class="row">
         <div class="col-md-6 textarea-container">
             <div class="input-header">
@@ -120,6 +152,13 @@
     </div>
     <div class="text-center text-muted mt-5">
         © 2024 <a href="https://t.me/web_tj" target="_blank" class="text-decoration-none">@web_tj</a>
+    </div>
+    <!-- Toast уведомление -->
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+        <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+            </div>
+        </div>
     </div>
 </div>
 
@@ -170,6 +209,51 @@
             console.error('Failed to paste: ', err);
         }
     }
+
+    async function copyPasteText() {
+    try {
+        const clipboardText = await navigator.clipboard.readText();
+        const inputTextElement = document.getElementById('inputText');
+        const outputTextElement = document.getElementById('outputText');
+        const toastElement = document.getElementById('notificationToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        const toast = new bootstrap.Toast(toastElement);
+
+        const hasTaj = taj.some(char => clipboardText.includes(char));
+        const hasRuzb = ruzb.some(char => clipboardText.includes(char));
+
+        if (hasTaj) {
+            inputTextElement.value = clipboardText;
+            const modifiedText = toRuzbaki(clipboardText);
+            outputTextElement.value = modifiedText;
+            await navigator.clipboard.writeText(modifiedText);
+            toastBody.textContent = 'Матн ба тољикї табдил ёфт ва ба буфер нусхабардорӣ шуд';
+            toast.show();
+        } else if (hasRuzb) {
+            outputTextElement.value = clipboardText;
+            const modifiedText = toTajik(clipboardText);
+            inputTextElement.value = modifiedText;
+            await navigator.clipboard.writeText(modifiedText);
+            toastBody.textContent = 'Матн ба тоҷикӣ табдил ёфт ва ба буфер нусхабардорӣ шуд';
+            toast.show();
+        } else {
+            inputTextElement.value = clipboardText;
+            outputTextElement.value = clipboardText;
+            toastBody.textContent = 'Матн бе тағйирот часбонида шуд';
+            toast.show();
+        }
+
+        setTimeout(() => toast.hide(), 5000);
+    } catch (err) {
+        console.error('Ошибка при работе с буфером обмена: ', err);
+        const toastElement = document.getElementById('notificationToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        const toast = new bootstrap.Toast(toastElement);
+        toastBody.textContent = 'Хатоӣ ҳангоми кор бо буфер рух дод';
+        toast.show();
+        setTimeout(() => toast.hide(), 5000);
+    }
+}
 
     // Event listener for the first textarea (Tajik to Ruzbaki)
     document.getElementById('inputText').addEventListener('input', function() {
